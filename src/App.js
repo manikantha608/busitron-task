@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import "../src/App.css"
+import WelcomeScreen from './components/WelcomeScreen';
+import UserDetailsForm from './components/UserDetailsForm';
+import ContentPreference from './components/ContentPreference';
+import CategoryRecommendations from './components/CategoryRecommendations';
+import FinalScreen from './components/FinalScreen';
 
-function App() {
+const App = () => {
+  const [step, setStep] = useState(1);  
+
+  const nextStep = () => setStep(step + 1);  
+
+  const skipStep = () => setStep(step + 1);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     
+      {step === 1 && <WelcomeScreen onNext={nextStep} />}  
+      {step === 2 && <UserDetailsForm onNext={nextStep} />} 
+      {step === 3 && <ContentPreference onNext={nextStep} onSkip={skipStep} />} 
+      {step === 4 && <CategoryRecommendations onNext={nextStep} />} 
+      {step === 5 && <FinalScreen />}  
     </div>
   );
-}
+};
 
 export default App;
