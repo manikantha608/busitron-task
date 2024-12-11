@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useCategory } from "../context/CategoryContext"; 
+import { useCategory } from "../context/CategoryContext"; // Import the context
 import ProgressBar from './ProgressBar';
 import "../styles/ContentPreference.css"; 
 
@@ -13,14 +13,10 @@ const categories = [
 ];
 
 const ContentPreference = ({ onNext, onSkip }) => {
-  const { selectedCategories, updateSelectedCategories } = useCategory(); 
+  const { selectedCategories, updateSelectedCategories } = useCategory(); // Use context
 
-  const handleSelect = (id) => {
-    const updatedSelection = selectedCategories.includes(id)
-      ? selectedCategories.filter((catId) => catId !== id) 
-      : [...selectedCategories, id]; 
-
-    updateSelectedCategories(updatedSelection); 
+  const handleSelect = (category) => {
+    updateSelectedCategories(category); // Pass full category object to update function
   };
 
   return (
@@ -44,8 +40,8 @@ const ContentPreference = ({ onNext, onSkip }) => {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className={`category-card ${selectedCategories.includes(category.id) ? "selected" : ""}`}
-              onClick={() => handleSelect(category.id)} 
+              className={`category-card ${selectedCategories.some(cat => cat.id === category.id) ? "selected" : ""}`}
+              onClick={() => handleSelect(category)} // Pass full category object on select
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },

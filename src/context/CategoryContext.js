@@ -8,10 +8,18 @@ export const useCategory = () => {
 };
 
 export const CategoryProvider = ({ children }) => {
+
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const updateSelectedCategories = (newSelection) => {
-    setSelectedCategories(newSelection);
+  const updateSelectedCategories = (category) => {
+    setSelectedCategories((prevCategories) => {
+  
+      if (prevCategories.some((cat) => cat.id === category.id)) {
+        return prevCategories.filter((cat) => cat.id !== category.id);
+      }
+      
+      return [...prevCategories, category];
+    });
   };
 
   return (
@@ -20,3 +28,6 @@ export const CategoryProvider = ({ children }) => {
     </CategoryContext.Provider>
   );
 };
+
+
+

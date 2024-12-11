@@ -6,6 +6,7 @@ import ProgressBar from "./ProgressBar";
 
 const FinalScreen = () => {
   const { selectedCategories } = useCategory(); 
+  console.log(selectedCategories,"SELECT")
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -18,7 +19,7 @@ const FinalScreen = () => {
       <p>Here are your selected categories:</p>
       <div className="selected-categories">
         {selectedCategories && selectedCategories.length > 0 ? (
-          selectedCategories.map((category, index) => (
+          selectedCategories[1].map((category, index) => (
             <motion.div
               key={index}
               className="category-chip"

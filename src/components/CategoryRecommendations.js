@@ -1,40 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { fetchRecommendations } from "../api/recommendations";
+import { fetchRecommendations } from "../api/recommendations";  
 import "../styles/CategoryRecommendations.css";
 import { useCategory } from "../context/CategoryContext"; 
 import ProgressBar from "./ProgressBar";
 
 const CategoryRecommendations = ({ onNext, onSelectAll }) => {
   const { selectedCategories, updateSelectedCategories } = useCategory(); 
-  console.log(selectedCategories, "sCatt");
+  console.log(selectedCategories, "Selected Categories");
 
   const [categories, setCategories] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchRecommendations();
-      setCategories(data);
+      setCategories(data);  
     };
     fetchData();
   }, []);
 
+  // Handle selecting all categories
   const handleSelectAll = () => {
-    updateSelectedCategories(categories);
-    if (onSelectAll) onSelectAll(categories);
+    updateSelectedCategories(categories);  
+    if (onSelectAll) onSelectAll(categories); 
   };
 
+  // Handle the Next button click
   const handleNext = () => {
-    if (onNext) onNext(selectedCategories);
+    if (onNext) onNext(selectedCategories); 
   };
 
+  // Toggle the selection of a category
   const toggleCategorySelection = (category) => {
     const isSelected = selectedCategories.some((cat) => cat.id === category.id);
     const updatedSelection = isSelected
       ? selectedCategories.filter((cat) => cat.id !== category.id)
-      : [...selectedCategories, category]; 
+      : [...selectedCategories, category];  
 
-    updateSelectedCategories(updatedSelection);
+    updateSelectedCategories(updatedSelection); 
   };
 
   return (
@@ -44,7 +48,8 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
       transition={{ duration: 0.5 }}
       className="category-recommendations"
     >
-      <ProgressBar currentStep={4} totalSteps={5}/>
+    
+      <ProgressBar currentStep={4} totalSteps={5} />
       <h2>Recommended Categories</h2>
       <motion.div
         className="recommendations"
@@ -54,13 +59,14 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
           visible: { transition: { staggerChildren: 0.3 } },
         }}
       >
+
         {categories.map((cat) => (
           <motion.div
             key={cat.id}
             className={`recommendation-card ${
               selectedCategories.some((selected) => selected.id === cat.id) ? "selected" : ""
             }`}
-            onClick={() => toggleCategorySelection(cat)}
+            onClick={() => toggleCategorySelection(cat)}  
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 },
@@ -75,6 +81,7 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
         ))}
       </motion.div>
       <div className="actions">
+       
         <motion.button
           className="select-all-btn"
           onClick={handleSelectAll}
@@ -84,6 +91,7 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
         >
           Select All
         </motion.button>
+  
         <motion.button
           className="next-btn"
           onClick={handleNext}
