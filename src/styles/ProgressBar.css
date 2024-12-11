@@ -1,7 +1,7 @@
 
 /* Fixed width for the progress bar container */
 .progress-bar-container {
-  width: 400px; 
+  width: 200px; 
   margin: 0 auto; 
   padding: 10px;
   position: relative;
