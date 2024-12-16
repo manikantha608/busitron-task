@@ -24,9 +24,6 @@
   margin-bottom: 30px;
 }
 
-
-
-/* Base button styles */
 .get-started {
   padding: 12px 20px;
   font-size: 18px;
@@ -40,14 +37,14 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* Hover effect */
+
 .get-started:hover {
   background: linear-gradient(135deg, #ff6a95, #ff8e42);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
 
-/* Active effect */
+
 .get-started:active {
   transform: translateY(2px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

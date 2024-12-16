@@ -1,44 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { fetchRecommendations } from "../api/recommendations";  
+import { fetchRecommendations } from "../api/recommendations";
 import "../styles/CategoryRecommendations.css";
-import { useCategory } from "../context/CategoryContext"; 
 import ProgressBar from "./ProgressBar";
+import { CategoryContext } from "../context/CategoryContext";
 
-const CategoryRecommendations = ({ onNext, onSelectAll }) => {
-  const { selectedCategories, updateSelectedCategories } = useCategory(); 
-  console.log(selectedCategories, "Selected Categories");
+const debounce = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
 
+const CategoryRecommendations = ({ onNext }) => {
+  const { selectedCategories, setSelectedCategories } = useContext(CategoryContext);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const output = selectedCategories.length
+        ? selectedCategories.map((obj) => obj.name).join(",")
+        : "";
+      const data = await fetchRecommendations(output);
+      data.pop();
+      const newData = data.map((item, index) => ({ id: index, name: item }));
+      setCategories(newData);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const debouncedFetchData = useCallback(debounce(fetchData, 300), [selectedCategories]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchRecommendations();
-      setCategories(data);  
-    };
-    fetchData();
+    debouncedFetchData();
   }, []);
 
-  // Handle selecting all categories
-  const handleSelectAll = () => {
-    updateSelectedCategories(categories);  
-    if (onSelectAll) onSelectAll(categories); 
-  };
-
-  // Handle the Next button click
-  const handleNext = () => {
-    if (onNext) onNext(selectedCategories); 
-  };
-
-  // Toggle the selection of a category
   const toggleCategorySelection = (category) => {
-    const isSelected = selectedCategories.some((cat) => cat.id === category.id);
-    const updatedSelection = isSelected
-      ? selectedCategories.filter((cat) => cat.id !== category.id)
-      : [...selectedCategories, category];  
+    console.log(category.id);
+    setSelectedCategories((prev) =>
+      prev.some((item) => item.id === category.id)
+        ? prev.filter((item) => item.id !== category.id)
+        : [...prev, category]
+    );
+  };
 
-    updateSelectedCategories(updatedSelection); 
+  const handleSelectAll = () => {
+    setSelectedCategories((prev) => [...prev, ...categories]);
+  };
+
+  const handleNext = () => {
+    if (onNext) onNext(selectedCategories);
   };
 
   return (
@@ -48,40 +67,38 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
       transition={{ duration: 0.5 }}
       className="category-recommendations"
     >
-    
       <ProgressBar currentStep={4} totalSteps={5} />
       <h2>Recommended Categories</h2>
-      <motion.div
-        className="recommendations"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          visible: { transition: { staggerChildren: 0.3 } },
-        }}
-      >
-
-        {categories.map((cat) => (
-          <motion.div
-            key={cat.id}
-            className={`recommendation-card ${
-              selectedCategories.some((selected) => selected.id === cat.id) ? "selected" : ""
-            }`}
-            onClick={() => toggleCategorySelection(cat)}  
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="ai-tag">AI Suggested</div>
-            <div className="icon">{cat.icon}</div>
-            <div className="name">{cat.name}</div>
-          </motion.div>
-        ))}
-      </motion.div>
+      {loading ? (
+        <div className="loading-spinner">Loading...</div>
+      ) : (
+        <motion.div
+          className="recommendations"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
+        >
+          {categories.map((cat) => (
+            <motion.div
+              key={cat.id}
+              className={`recommendation-card ${
+                selectedCategories.some((item) => item.id === cat.id) ? "selected" : ""
+              }`}
+              onClick={() => toggleCategorySelection(cat)}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="ai-tag">AI Suggested</div>
+              <div className="name">{cat.name}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
       <div className="actions">
-       
         <motion.button
           className="select-all-btn"
           onClick={handleSelectAll}
@@ -91,7 +108,6 @@ const CategoryRecommendations = ({ onNext, onSelectAll }) => {
         >
           Select All
         </motion.button>
-  
         <motion.button
           className="next-btn"
           onClick={handleNext}

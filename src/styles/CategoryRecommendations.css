@@ -98,3 +98,11 @@
 .category-recommendations .actions button:active {
   transform: translateY(1px);
 }
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #555;
+  height: 200px;
+}

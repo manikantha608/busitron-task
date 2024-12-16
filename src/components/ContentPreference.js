@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
-import { useCategory } from "../context/CategoryContext"; // Import the context
-import ProgressBar from './ProgressBar';
-import "../styles/ContentPreference.css"; 
+import { CategoryContext } from "../context/CategoryContext";
+import ProgressBar from "./ProgressBar";
+import "../styles/ContentPreference.css";
 
 const categories = [
   { id: 1, name: "Technology", icon: "💻" },
@@ -13,10 +13,20 @@ const categories = [
 ];
 
 const ContentPreference = ({ onNext, onSkip }) => {
-  const { selectedCategories, updateSelectedCategories } = useCategory(); // Use context
+  const { selectedCategories, setSelectedCategories } = useContext(CategoryContext);
 
   const handleSelect = (category) => {
-    updateSelectedCategories(category); // Pass full category object to update function
+    setSelectedCategories((prev) =>
+      prev.some((item) => item.id === category.id)
+        ? prev.filter((item) => item.id !== category.id) 
+        : [...prev, category] 
+    );
+  };
+
+  const handleNext = () => {
+    if (onNext) {
+      onNext(selectedCategories); 
+    }
   };
 
   return (
@@ -40,8 +50,10 @@ const ContentPreference = ({ onNext, onSkip }) => {
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              className={`category-card ${selectedCategories.some(cat => cat.id === category.id) ? "selected" : ""}`}
-              onClick={() => handleSelect(category)} // Pass full category object on select
+              className={`category-card ${
+                selectedCategories.some((item) => item.id === category.id) ? "selected" : ""
+              }`}
+              onClick={() => handleSelect(category)}
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
@@ -55,8 +67,12 @@ const ContentPreference = ({ onNext, onSkip }) => {
           ))}
         </motion.div>
         <div className="actions">
-          <button className="skip-btn" onClick={onSkip}>Skip</button>
-          <button className="next-btn" onClick={onNext}>Next</button>
+          <button className="skip-btn" onClick={onSkip}>
+            Skip
+          </button>
+          <button className="next-btn" onClick={handleNext}>
+            Next
+          </button>
         </div>
       </motion.div>
     </div>

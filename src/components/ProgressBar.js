@@ -18,7 +18,7 @@ const ProgressBar = ({ currentStep, totalSteps }) => {
         ></div>
       </div>
 
-      {/* Dotted Progress Indicator */}
+
       <div className="progress-dots">
         {[...Array(totalSteps)].map((_, index) => (
           <span

@@ -1,4 +1,4 @@
-/* Container */
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -12,7 +12,6 @@
   margin: 11% auto;
 }
 
-/* Form Styling */
 .user-details-form h2 {
   font-size: 24px;
   font-weight: bold;
@@ -50,10 +49,9 @@
   position: absolute;
   left: 10px;
   top: 45px;
-  /* padding: 10px; */
 }
 
-/* Button Styling */
+
 .motion-button {
   padding: 12px 20px;
   font-size: 18px;

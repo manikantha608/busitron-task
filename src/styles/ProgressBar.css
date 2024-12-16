@@ -1,5 +1,4 @@
 
-/* Fixed width for the progress bar container */
 .progress-bar-container {
   width: 200px; 
   margin: 0 auto; 
@@ -7,7 +6,6 @@
   position: relative;
 }
 
-/* Background of the progress bar */
 .progress-bar-background {
   width: 100%;
   height: 10px; 
@@ -16,15 +14,12 @@
   overflow: hidden;
   position: relative;
 }
-
-/* The moving progress bar */
 .progress-bar {
   height: 100%;
   background-color: #8a2be2; 
   border-radius: 5px;
 }
 
-/* Dotted progress indicator */
 .progress-dots {
   display: flex;
   justify-content: space-between;
